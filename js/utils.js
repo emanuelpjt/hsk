@@ -1,6 +1,3 @@
-// js/utils.js
-
-// Lee el archivo y fuerza decodificación UTF-8
 async function fetchCSV(path) {
   const res = await fetch(path);
   if (!res.ok) throw new Error(`HTTP ${res.status} al cargar ${path}`);
