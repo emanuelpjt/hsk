@@ -3,30 +3,42 @@ let currentIndex = 0;
 
 async function loadFlashcards(mode) {
   const level = document.getElementById("flash-level").value;
-  const response = await fetch(`data/HSK${level}.csv`);
-  const text = await response.text();
-  flashcards = text.trim().split("\n").slice(1).map(line => {
-    const [hanzi, pinyin, esp] = line.split(",");
-    return {hanzi, pinyin, esp};
-  });
-  
-  if (mode === "random") {
-    flashcards = flashcards.sort(() => Math.random() - 0.5);
+  try {
+    const raw = await fetchCSV(`data/HSK${level}.csv`); // o data/hsk${level}.csv según tu nombre
+    const rows = parseCSV(raw);
+    console.log("Primeras filas HSK"+level, rows.slice(0,5));
+    flashcards = rowsToObjects(rows);
+
+    if (mode === "random") {
+      // shuffle
+      for (let i = flashcards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+      }
+    }
+
+    currentIndex = 0;
+    showFlashcard();
+  } catch (err) {
+    console.error(err);
+    alert("Error cargando flashcards: " + err.message);
   }
-  
-  currentIndex = 0;
-  showFlashcard();
 }
 
 function showFlashcard() {
-  if (flashcards.length === 0) return;
+  if (!flashcards.length) {
+    document.getElementById("flashcard-container").textContent = "No hay datos";
+    return;
+  }
   const card = flashcards[currentIndex];
   document.getElementById("flashcard-container").innerHTML = `
-    <p><strong>${card.hanzi}</strong></p>
+    <p style="font-size:40px;"><strong>${card.hanzi}</strong></p>
     <p>${card.pinyin}</p>
     <p>${card.esp}</p>
-    <button onclick="prevFlash()">⏮</button>
-    <button onclick="nextFlash()">⏭</button>
+    <div>
+      <button onclick="prevFlash()">⏮</button>
+      <button onclick="nextFlash()">⏭</button>
+    </div>
   `;
 }
 
@@ -38,4 +50,9 @@ function nextFlash() {
 function prevFlash() {
   currentIndex = (currentIndex - 1 + flashcards.length) % flashcards.length;
   showFlashcard();
+}
+function prevFlash() {
+  currentIndex = (currentIndex - 1 + flashcards.length) % flashcards.length;
+  showFlashcard();
+
 }
