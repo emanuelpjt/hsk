@@ -1,36 +1,41 @@
 async function showWordOfDay() {
   const level = document.getElementById("day-level").value;
-  const response = await fetch(`data/HSK${level}.csv`);
-  const text = await response.text();
-  const words = text.trim().split("\n").slice(1).map(line => {
-    const [hanzi, pinyin, esp] = line.split(",");
-    return {hanzi, pinyin, esp};
-  });
+  try {
+    const raw = await fetchCSV(`data/HSK${level}.csv`);
+    const rows = parseCSV(raw);
+    const words = rowsToObjects(rows);
 
-  const today = new Date().toISOString().split("T")[0];
-  const key = `wordOfDay_HSK${level}_${today}`;
-
-  let word = localStorage.getItem(key);
-  if (!word) {
-    const usedKey = `usedWords_HSK${level}`;
-    let used = JSON.parse(localStorage.getItem(usedKey) || "[]");
-
-    const remaining = words.filter(w => !used.some(u => u.hanzi === w.hanzi));
-    if (remaining.length === 0) {
-      used = []; // reiniciar ciclo
+    if (!words.length) {
+      document.getElementById("day-word").textContent = "No hay palabras en este nivel";
+      return;
     }
 
-    word = remaining[Math.floor(Math.random() * remaining.length)];
-    used.push(word);
-    localStorage.setItem(key, JSON.stringify(word));
-    localStorage.setItem(usedKey, JSON.stringify(used));
-  } else {
-    word = JSON.parse(word);
-  }
+    const today = new Date().toISOString().split("T")[0];
+    const keyToday = `wordOfDay_HSK${level}_${today}`;
+    let word = localStorage.getItem(keyToday);
 
-  document.getElementById("day-word").innerHTML = `
-    <p><strong>${word.hanzi}</strong></p>
-    <p>${word.pinyin}</p>
-    <p>${word.esp}</p>
-  `;
+    if (!word) {
+      const usedKey = `usedWords_HSK${level}`;
+      let used = JSON.parse(localStorage.getItem(usedKey) || "[]");
+      // elegir remaining
+      const remaining = words.filter(w => !used.includes(w.hanzi));
+      if (remaining.length === 0) used = []; // reiniciar ciclo
+      const pick = (remaining.length ? remaining[Math.floor(Math.random() * remaining.length)] : words[0]);
+      used.push(pick.hanzi);
+      localStorage.setItem(usedKey, JSON.stringify(used));
+      localStorage.setItem(keyToday, JSON.stringify(pick));
+      word = pick;
+    } else {
+      word = JSON.parse(word);
+    }
+
+    document.getElementById("day-word").innerHTML = `
+      <p style="font-size:40px;"><strong>${word.hanzi}</strong></p>
+      <p>${word.pinyin}</p>
+      <p>${word.esp}</p>
+    `;
+  } catch (err) {
+    console.error(err);
+    alert("Error con Palabra del Día: " + err.message);
+  }
 }
