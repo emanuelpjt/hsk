@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>HSK Vocabulario</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <h1>📖 Vocabulario HSK</h1>
+
+  <!-- Navegación -->
+  <nav>
+    <button onclick="showSection('flashcards')">Flashcards 🃏</button>
+    <button onclick="showSection('search')">Buscador 🔍</button>
+    <button onclick="showSection('wordOfDay')">Palabra del Día 🗓️</button>
+  </nav>
+
+  <!-- Flashcards -->
+  <section id="flashcards" class="hidden">
+    <h2>Flashcards 🃏</h2>
+    <select id="flash-level"></select>
+    <button onclick="loadFlashcards('sequential')">Modo Secuencial</button>
+    <button onclick="loadFlashcards('random')">Modo Aleatorio</button>
+    <div id="flashcard-container"></div>
+  </section>
+
+  <!-- Buscador -->
+  <section id="search" class="hidden">
+    <h2>Buscador 🔍</h2>
+    <select id="search-level"></select>
+    <input type="text" id="search-input" placeholder="Buscar...">
+    <table>
+      <thead>
+        <tr><th>Hanzi</th><th>Pinyin</th><th>Español</th></tr>
+      </thead>
+      <tbody id="search-results"></tbody>
+    </table>
+  </section>
+
+  <!-- Palabra del Día -->
+  <section id="wordOfDay" class="hidden">
+    <h2>Palabra del Día 🗓️</h2>
+    <select id="day-level"></select>
+    <button onclick="showWordOfDay()">Mostrar</button>
+    <div id="day-word"></div>
+  </section>
+
+  <script src="js/flashcards.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/wordOfDay.js"></script>
+  <script>
+    // cambiar secciones
+    function showSection(id) {
+      document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
+      document.getElementById(id).classList.remove("hidden");
+    }
+    // cargar niveles en selects
+    ["flash-level","search-level","day-level"].forEach(selectId => {
+      const sel = document.getElementById(selectId);
+      for (let i=1; i<=6; i++) {
+        let opt = document.createElement("option");
+        opt.value = i; opt.textContent = "HSK " + i;
+        sel.appendChild(opt);
+      }
+    });
+  </script>
+</body>
+</html>
