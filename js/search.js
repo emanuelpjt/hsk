@@ -2,27 +2,31 @@ let searchData = [];
 
 async function loadSearchData() {
   const level = document.getElementById("search-level").value;
-  const response = await fetch(`data/HSK${level}.csv`);
-  const text = await response.text();
-  searchData = text.trim().split("\n").slice(1).map(line => {
-    const [hanzi, pinyin, esp] = line.split(",");
-    return {hanzi, pinyin, esp};
-  });
-  showResults("");
+  try {
+    const raw = await fetchCSV(`data/HSK${level}.csv`);
+    const rows = parseCSV(raw);
+    console.log("Search rows:", rows.slice(0,4));
+    searchData = rowsToObjects(rows);
+    showResults("");
+  } catch (err) {
+    console.error(err);
+    alert("Error cargando datos de búsqueda: " + err.message);
+  }
 }
 
 function showResults(query) {
+  const q = (query || '').toLowerCase();
   const tbody = document.getElementById("search-results");
   tbody.innerHTML = "";
   searchData
-    .filter(w => w.hanzi.includes(query) || w.pinyin.includes(query) || w.esp.includes(query))
+    .filter(w => !q || w.hanzi.toLowerCase().includes(q) || w.pinyin.toLowerCase().includes(q) || w.esp.toLowerCase().includes(q))
     .forEach(w => {
-      tbody.innerHTML += `<tr><td>${w.hanzi}</td><td>${w.pinyin}</td><td>${w.esp}</td></tr>`;
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${w.hanzi}</td><td>${w.pinyin}</td><td>${w.esp}</td>`;
+      tbody.appendChild(tr);
     });
 }
 
 document.getElementById("search-level").addEventListener("change", loadSearchData);
 document.getElementById("search-input").addEventListener("input", e => showResults(e.target.value));
-
-// cargar datos iniciales
 window.addEventListener("load", loadSearchData);
