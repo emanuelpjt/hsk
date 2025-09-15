@@ -2,69 +2,485 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>HSK Vocabulario</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HSK Vocabulario - Aprende Chino Mandarin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4a6fa5;
+      --primary-dark: #345280;
+      --secondary: #e74c3c;
+      --accent: #ff9f43;
+      --light: #f5f7fa;
+      --dark: #2d3436;
+      --gray: #646e76;
+      --success: #2ecc71;
+      --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: var(--dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .app-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+    }
+    
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 25px;
+      text-align: center;
+    }
+    
+    h1 {
+      font-weight: 700;
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    
+    nav {
+      display: flex;
+      justify-content: center;
+      background: var(--primary-dark);
+      padding: 0;
+    }
+    
+    .nav-btn {
+      background: none;
+      border: none;
+      color: white;
+      padding: 18px 24px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .nav-btn.active {
+      background: white;
+      color: var(--primary);
+    }
+    
+    .nav-btn i {
+      font-size: 1.2rem;
+    }
+    
+    section {
+      padding: 30px;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      min-height: 500px;
+    }
+    
+    section.active {
+      display: block;
+      opacity: 1;
+    }
+    
+    h2 {
+      color: var(--primary);
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 25px;
+      align-items: center;
+    }
+    
+    select, input, button {
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+    }
+    
+    select {
+      background: white;
+      cursor: pointer;
+      min-width: 150px;
+    }
+    
+    input {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    button.action-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    button.action-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    button.action-btn.secondary {
+      background: var(--secondary);
+    }
+    
+    button.action-btn.secondary:hover {
+      background: #c0392b;
+    }
+    
+    /* Flashcards Styles */
+    .flashcard {
+      perspective: 1000px;
+      width: 100%;
+      max-width: 500px;
+      height: 300px;
+      margin: 0 auto;
+    }
+    
+    .flashcard-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+    
+    .flashcard.flipped .flashcard-inner {
+      transform: rotateY(180deg);
+    }
+    
+    .flashcard-front, .flashcard-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+      box-shadow: var(--card-shadow);
+    }
+    
+    .flashcard-front {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+    }
+    
+    .flashcard-back {
+      background: white;
+      color: var(--dark);
+      transform: rotateY(180deg);
+    }
+    
+    .hanzi {
+      font-size: 3.5rem;
+      margin-bottom: 15px;
+    }
+    
+    .pinyin {
+      font-size: 1.5rem;
+      opacity: 0.9;
+    }
+    
+    .translation {
+      font-size: 1.8rem;
+      text-align: center;
+    }
+    
+    .example {
+      margin-top: 20px;
+      font-style: italic;
+      text-align: center;
+      color: var(--gray);
+    }
+    
+    .flashcard-controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    /* Search Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    thead {
+      background: var(--primary);
+      color: white;
+    }
+    
+    th, td {
+      padding: 15px;
+      text-align: left;
+    }
+    
+    tr:nth-child(even) {
+      background: #f8f9fa;
+    }
+    
+    tr:hover {
+      background: #edf2f7;
+    }
+    
+    /* Word of the Day Styles */
+    .word-of-day-card {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: var(--card-shadow);
+      text-align: center;
+    }
+    
+    .word-hanzi {
+      font-size: 4rem;
+      margin-bottom: 15px;
+      color: var(--primary);
+    }
+    
+    .word-pinyin {
+      font-size: 1.8rem;
+      color: var(--gray);
+      margin-bottom: 20px;
+    }
+    
+    .word-translation {
+      font-size: 2rem;
+      margin-bottom: 25px;
+      color: var(--dark);
+    }
+    
+    .word-example {
+      font-style: italic;
+      color: var(--gray);
+      padding: 15px;
+      border-top: 1px solid #eee;
+      margin-top: 15px;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+      }
+      
+      .nav-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      select, input, button {
+        width: 100%;
+      }
+      
+      .hanzi, .word-hanzi {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>📖 Vocabulario HSK</h1>
+  <div class="app-container">
+    <header>
+      <h1><i class="fas fa-book"></i> Vocabulario HSK</h1>
+      <p>Aprende y practica vocabulario para los exámenes HSK</p>
+    </header>
+    
+    <nav>
+      <button class="nav-btn active" onclick="showSection('flashcards')">
+        <i class="fas fa-clone"></i> Flashcards
+      </button>
+      <button class="nav-btn" onclick="showSection('search')">
+        <i class="fas fa-search"></i> Buscador
+      </button>
+      <button class="nav-btn" onclick="showSection('wordOfDay')">
+        <i class="fas fa-calendar-day"></i> Palabra del Día
+      </button>
+    </nav>
+    
+    <main>
+      <!-- Flashcards -->
+      <section id="flashcards" class="active">
+        <h2><i class="fas fa-clone"></i> Flashcards</h2>
+        <div class="controls">
+          <select id="flash-level"></select>
+          <button class="action-btn" onclick="loadFlashcards('sequential')">
+            <i class="fas fa-play-circle"></i> Modo Secuencial
+          </button>
+          <button class="action-btn" onclick="loadFlashcards('random')">
+            <i class="fas fa-random"></i> Modo Aleatorio
+          </button>
+        </div>
+        
+        <div class="flashcard" id="flashcard-container">
+          <div class="flashcard-inner">
+            <div class="flashcard-front">
+              <div class="hanzi">词</div>
+              <div class="pinyin">cí</div>
+              <p class="hint">Haz clic para voltear</p>
+            </div>
+            <div class="flashcard-back">
+              <div class="translation">Palabra</div>
+              <div class="example">Example: 这个词很重要 (Esta palabra es importante)</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flashcard-controls">
+          <button class="action-btn secondary">
+            <i class="fas fa-arrow-left"></i> Anterior
+          </button>
+          <button class="action-btn">
+            <i class="fas fa-sync"></i> Voltear
+          </button>
+          <button class="action-btn">
+            Siguiente <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </section>
+      
+      <!-- Buscador -->
+      <section id="search">
+        <h2><i class="fas fa-search"></i> Buscador</h2>
+        <div class="controls">
+          <select id="search-level"></select>
+          <input type="text" id="search-input" placeholder="Escribe una palabra en chino, pinyin o español...">
+        </div>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>Hanzi</th>
+              <th>Pinyin</th>
+              <th>Español</th>
+              <th>HSK</th>
+            </tr>
+          </thead>
+          <tbody id="search-results">
+            <tr>
+              <td>你好</td>
+              <td>nǐ hǎo</td>
+              <td>Hola</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td>谢谢</td>
+              <td>xiè xiè</td>
+              <td>Gracias</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td>朋友</td>
+              <td>péng yǒu</td>
+              <td>Amigo</td>
+              <td>2</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      
+      <!-- Palabra del Día -->
+      <section id="wordOfDay">
+        <h2><i class="fas fa-calendar-day"></i> Palabra del Día</h2>
+        <div class="controls">
+          <select id="day-level"></select>
+          <button class="action-btn" onclick="showWordOfDay()">
+            <i class="fas fa-eye"></i> Mostrar Palabra
+          </button>
+        </div>
+        
+        <div class="word-of-day-card">
+          <div class="word-hanzi">学习</div>
+          <div class="word-pinyin">xué xí</div>
+          <div class="word-translation">Estudiar</div>
+          <div class="word-example">我喜欢学习中文。 (Me gusta estudiar chino.)</div>
+        </div>
+      </section>
+    </main>
+  </div>
 
-  <!-- Navegación -->
-  <nav>
-    <button onclick="showSection('flashcards')">Flashcards 🃏</button>
-    <button onclick="showSection('search')">Buscador 🔍</button>
-    <button onclick="showSection('wordOfDay')">Palabra del Día 🗓️</button>
-  </nav>
-
-  <!-- Flashcards -->
-  <section id="flashcards" class="hidden">
-    <h2>Flashcards 🃏</h2>
-    <select id="flash-level"></select>
-    <button onclick="loadFlashcards('sequential')">Modo Secuencial</button>
-    <button onclick="loadFlashcards('random')">Modo Aleatorio</button>
-    <div id="flashcard-container"></div>
-  </section>
-
-  <!-- Buscador -->
-  <section id="search" class="hidden">
-    <h2>Buscador 🔍</h2>
-    <select id="search-level"></select>
-    <input type="text" id="search-input" placeholder="Buscar...">
-    <table>
-      <thead>
-        <tr><th>Hanzi</th><th>Pinyin</th><th>Español</th></tr>
-      </thead>
-      <tbody id="search-results"></tbody>
-    </table>
-  </section>
-
-  <!-- Palabra del Día -->
-  <section id="wordOfDay" class="hidden">
-    <h2>Palabra del Día 🗓️</h2>
-    <select id="day-level"></select>
-    <button onclick="showWordOfDay()">Mostrar</button>
-    <div id="day-word"></div>
-  </section>
-
-   <script src="js/utils.js"></script>
-   <script src="js/flashcards.js"></script>
-   <script src="js/search.js"></script>
-   <script src="js/wordOfDay.js"></script>
   <script>
-    // cambiar secciones
+    // Cambiar secciones
     function showSection(id) {
-      document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
-      document.getElementById(id).classList.remove("hidden");
+      document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+      
+      document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active"));
+      event.currentTarget.classList.add("active");
     }
-    // cargar niveles en selects
+    
+    // Cargar niveles en selects
     ["flash-level","search-level","day-level"].forEach(selectId => {
       const sel = document.getElementById(selectId);
       for (let i=1; i<=6; i++) {
         let opt = document.createElement("option");
-        opt.value = i; opt.textContent = "HSK " + i;
+        opt.value = i; 
+        opt.textContent = "HSK " + i;
         sel.appendChild(opt);
       }
+    });
+    
+    // Funcionalidad de flashcard (ejemplo)
+    document.querySelector('.flashcard').addEventListener('click', function() {
+      this.classList.toggle('flipped');
     });
   </script>
 </body>
 </html>
-
