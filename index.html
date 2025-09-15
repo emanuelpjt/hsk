@@ -4,8 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HSK Vocabulario - Aprende Chino Mandarin</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #4a6fa5;
@@ -27,7 +25,7 @@
     }
     
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       color: var(--dark);
       line-height: 1.6;
@@ -55,10 +53,6 @@
       font-weight: 700;
       font-size: 2.2rem;
       margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
     }
     
     nav {
@@ -89,10 +83,6 @@
     .nav-btn.active {
       background: white;
       color: var(--primary);
-    }
-    
-    .nav-btn i {
-      font-size: 1.2rem;
     }
     
     section {
@@ -129,7 +119,7 @@
       padding: 12px 16px;
       border-radius: 8px;
       border: 1px solid #ddd;
-      font-family: 'Inter', sans-serif;
+      font-family: inherit;
       font-size: 1rem;
     }
     
@@ -231,13 +221,6 @@
       text-align: center;
     }
     
-    .example {
-      margin-top: 20px;
-      font-style: italic;
-      text-align: center;
-      color: var(--gray);
-    }
-    
     .flashcard-controls {
       display: flex;
       justify-content: center;
@@ -302,14 +285,6 @@
       color: var(--dark);
     }
     
-    .word-example {
-      font-style: italic;
-      color: var(--gray);
-      padding: 15px;
-      border-top: 1px solid #eee;
-      margin-top: 15px;
-    }
-    
     /* Responsive Design */
     @media (max-width: 768px) {
       nav {
@@ -334,38 +309,42 @@
         font-size: 2.5rem;
       }
     }
+
+    .icon {
+      font-size: 1.2rem;
+    }
   </style>
 </head>
 <body>
   <div class="app-container">
     <header>
-      <h1><i class="fas fa-book"></i> Vocabulario HSK</h1>
+      <h1>📖 Vocabulario HSK</h1>
       <p>Aprende y practica vocabulario para los exámenes HSK</p>
     </header>
     
     <nav>
       <button class="nav-btn active" onclick="showSection('flashcards')">
-        <i class="fas fa-clone"></i> Flashcards
+        <span class="icon">🃏</span> Flashcards
       </button>
       <button class="nav-btn" onclick="showSection('search')">
-        <i class="fas fa-search"></i> Buscador
+        <span class="icon">🔍</span> Buscador
       </button>
       <button class="nav-btn" onclick="showSection('wordOfDay')">
-        <i class="fas fa-calendar-day"></i> Palabra del Día
+        <span class="icon">🗓️</span> Palabra del Día
       </button>
     </nav>
     
     <main>
       <!-- Flashcards -->
       <section id="flashcards" class="active">
-        <h2><i class="fas fa-clone"></i> Flashcards</h2>
+        <h2><span class="icon">🃏</span> Flashcards</h2>
         <div class="controls">
           <select id="flash-level"></select>
           <button class="action-btn" onclick="loadFlashcards('sequential')">
-            <i class="fas fa-play-circle"></i> Modo Secuencial
+            <span class="icon">▶️</span> Modo Secuencial
           </button>
           <button class="action-btn" onclick="loadFlashcards('random')">
-            <i class="fas fa-random"></i> Modo Aleatorio
+            <span class="icon">🔀</span> Modo Aleatorio
           </button>
         </div>
         
@@ -374,34 +353,33 @@
             <div class="flashcard-front">
               <div class="hanzi">词</div>
               <div class="pinyin">cí</div>
-              <p class="hint">Haz clic para voltear</p>
+              <p>Haz clic para voltear</p>
             </div>
             <div class="flashcard-back">
               <div class="translation">Palabra</div>
-              <div class="example">Example: 这个词很重要 (Esta palabra es importante)</div>
             </div>
           </div>
         </div>
         
         <div class="flashcard-controls">
-          <button class="action-btn secondary">
-            <i class="fas fa-arrow-left"></i> Anterior
+          <button class="action-btn secondary" onclick="prevCard()">
+            <span class="icon">◀️</span> Anterior
           </button>
-          <button class="action-btn">
-            <i class="fas fa-sync"></i> Voltear
+          <button class="action-btn" onclick="flipCard()">
+            <span class="icon">🔄</span> Voltear
           </button>
-          <button class="action-btn">
-            Siguiente <i class="fas fa-arrow-right"></i>
+          <button class="action-btn" onclick="nextCard()">
+            Siguiente <span class="icon">▶️</span>
           </button>
         </div>
       </section>
       
       <!-- Buscador -->
       <section id="search">
-        <h2><i class="fas fa-search"></i> Buscador</h2>
+        <h2><span class="icon">🔍</span> Buscador</h2>
         <div class="controls">
           <select id="search-level"></select>
-          <input type="text" id="search-input" placeholder="Escribe una palabra en chino, pinyin o español...">
+          <input type="text" id="search-input" placeholder="Escribe una palabra en chino, pinyin o español..." oninput="filterWords()">
         </div>
         
         <table>
@@ -414,49 +392,106 @@
             </tr>
           </thead>
           <tbody id="search-results">
-            <tr>
-              <td>你好</td>
-              <td>nǐ hǎo</td>
-              <td>Hola</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>谢谢</td>
-              <td>xiè xiè</td>
-              <td>Gracias</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>朋友</td>
-              <td>péng yǒu</td>
-              <td>Amigo</td>
-              <td>2</td>
-            </tr>
+            <!-- Los resultados se cargarán aquí -->
           </tbody>
         </table>
       </section>
       
       <!-- Palabra del Día -->
       <section id="wordOfDay">
-        <h2><i class="fas fa-calendar-day"></i> Palabra del Día</h2>
+        <h2><span class="icon">🗓️</span> Palabra del Día</h2>
         <div class="controls">
           <select id="day-level"></select>
           <button class="action-btn" onclick="showWordOfDay()">
-            <i class="fas fa-eye"></i> Mostrar Palabra
+            <span class="icon">👁️</span> Mostrar Palabra
           </button>
         </div>
         
         <div class="word-of-day-card">
-          <div class="word-hanzi">学习</div>
-          <div class="word-pinyin">xué xí</div>
-          <div class="word-translation">Estudiar</div>
-          <div class="word-example">我喜欢学习中文。 (Me gusta estudiar chino.)</div>
+          <div class="word-hanzi" id="day-hanzi">学习</div>
+          <div class="word-pinyin" id="day-pinyin">xué xí</div>
+          <div class="word-translation" id="day-translation">Estudiar</div>
         </div>
       </section>
     </main>
   </div>
 
   <script>
+    // Datos de ejemplo (en un caso real, se cargarían desde CSV)
+    const vocabulary = {
+      1: [
+        { hanzi: "你好", pinyin: "nǐ hǎo", translation: "hola" },
+        { hanzi: "谢谢", pinyin: "xiè xie", translation: "gracias" },
+        { hanzi: "请", pinyin: "qǐng", translation: "por favor" },
+        { hanzi: "我", pinyin: "wǒ", translation: "yo" },
+        { hanzi: "你", pinyin: "nǐ", translation: "tú" }
+      ],
+      2: [
+        { hanzi: "朋友", pinyin: "péng yǒu", translation: "amigo" },
+        { hanzi: "学校", pinyin: "xué xiào", translation: "escuela" },
+        { hanzi: "学生", pinyin: "xué shēng", translation: "estudiante" },
+        { hanzi: "老师", pinyin: "lǎo shī", translation: "profesor" },
+        { hanzi: "中国", pinyin: "zhōng guó", translation: "China" }
+      ],
+      3: [
+        { hanzi: "电脑", pinyin: "diàn nǎo", translation: "computadora" },
+        { hanzi: "手机", pinyin: "shǒu jī", translation: "teléfono móvil" },
+        { hanzi: "电影", pinyin: "diàn yǐng", translation: "película" },
+        { hanzi: "音乐", pinyin: "yīn yuè", translation: "música" },
+        { hanzi: "运动", pinyin: "yùn dòng", translation: "deporte" }
+      ],
+      4: [
+        { hanzi: "文化", pinyin: "wén huà", translation: "cultura" },
+        { hanzi: "历史", pinyin: "lì shǐ", translation: "historia" },
+        { hanzi: "经济", pinyin: "jīng jì", translation: "economía" },
+        { hanzi: "社会", pinyin: "shè huì", translation: "sociedad" },
+        { hanzi: "政治", pinyin: "zhèng zhì", translation: "política" }
+      ],
+      5: [
+        { hanzi: "环境", pinyin: "huán jìng", translation: "medio ambiente" },
+        { hanzi: "发展", pinyin: "fā zhǎn", translation: "desarrollo" },
+        { hanzi: "国际", pinyin: "guó jì", translation: "internacional" },
+        { hanzi: "教育", pinyin: "jiào yù", translation: "educación" },
+        { hanzi: "科学", pinyin: "kē xué", translation: "ciencia" }
+      ],
+      6: [
+        { hanzi: "哲学", pinyin: "zhé xué", translation: "filosofía" },
+        { hanzi: "心理学", pinyin: "xīn lǐ xué", translation: "psicología" },
+        { hanzi: "生物学", pinyin: "shēng wù xué", translation: "biología" },
+        { hanzi: "医学", pinyin: "yī xué", translation: "medicina" },
+        { hanzi: "工程", pinyin: "gōng chéng", translation: "ingeniería" }
+      ]
+    };
+
+    // Variables globales
+    let currentLevel = 1;
+    let currentMode = 'sequential';
+    let currentIndex = 0;
+    let currentDeck = [];
+    let viewedWords = {};
+
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', function() {
+      // Cargar niveles en selects
+      ["flash-level", "search-level", "day-level"].forEach(selectId => {
+        const sel = document.getElementById(selectId);
+        for (let i = 1; i <= 6; i++) {
+          let opt = document.createElement("option");
+          opt.value = i;
+          opt.textContent = "HSK " + i;
+          sel.appendChild(opt);
+        }
+      });
+
+      // Inicializar palabras vistas
+      for (let i = 1; i <= 6; i++) {
+        viewedWords[i] = JSON.parse(localStorage.getItem(`viewedWords-${i}`)) || [];
+      }
+
+      // Cargar datos de ejemplo en el buscador
+      loadSearchResults(1);
+    });
+
     // Cambiar secciones
     function showSection(id) {
       document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
@@ -464,23 +499,15 @@
       
       document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active"));
       event.currentTarget.classList.add("active");
-    }
-    
-    // Cargar niveles en selects
-    ["flash-level","search-level","day-level"].forEach(selectId => {
-      const sel = document.getElementById(selectId);
-      for (let i=1; i<=6; i++) {
-        let opt = document.createElement("option");
-        opt.value = i; 
-        opt.textContent = "HSK " + i;
-        sel.appendChild(opt);
+
+      // Si es la sección de búsqueda, cargar resultados
+      if (id === 'search') {
+        const level = document.getElementById('search-level').value;
+        loadSearchResults(level);
       }
-    });
-    
-    // Funcionalidad de flashcard (ejemplo)
-    document.querySelector('.flashcard').addEventListener('click', function() {
-      this.classList.toggle('flipped');
-    });
-  </script>
-</body>
-</html>
+    }
+
+    // Cargar flashcards
+    function loadFlashcards(mode) {
+      const level = document.getElementById('flash-level').value;
+      currentLevel = parseInt(level);
