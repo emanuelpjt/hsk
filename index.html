@@ -511,3 +511,152 @@
     function loadFlashcards(mode) {
       const level = document.getElementById('flash-level').value;
       currentLevel = parseInt(level);
+      currentMode = mode;
+      currentDeck = [...vocabulary[currentLevel]];
+      
+      if (mode === 'random') {
+        shuffleArray(currentDeck);
+      }
+      
+      currentIndex = 0;
+      showCurrentCard();
+    }
+
+    // Mostrar la tarjeta actual
+    function showCurrentCard() {
+      if (currentDeck.length === 0) return;
+      
+      const card = currentDeck[currentIndex];
+      const container = document.getElementById('flashcard-container');
+      
+      container.innerHTML = `
+        <div class="flashcard-inner">
+          <div class="flashcard-front">
+            <div class="hanzi">${card.hanzi}</div>
+            <div class="pinyin">${card.pinyin}</div>
+            <p>Haz clic para voltear</p>
+          </div>
+          <div class="flashcard-back">
+            <div class="translation">${card.translation}</div>
+          </div>
+        </div>
+      `;
+      
+      // Añadir evento de clic para voltear
+      container.querySelector('.flashcard-inner').addEventListener('click', function() {
+        this.parentElement.classList.toggle('flipped');
+      });
+    }
+
+    // Voltear tarjeta
+    function flipCard() {
+      const flashcard = document.querySelector('.flashcard');
+      flashcard.classList.toggle('flipped');
+    }
+
+    // Tarjeta anterior
+    function prevCard() {
+      if (currentDeck.length === 0) return;
+      
+      currentIndex = (currentIndex - 1 + currentDeck.length) % currentDeck.length;
+      showCurrentCard();
+    }
+
+    // Siguiente tarjeta
+    function nextCard() {
+      if (currentDeck.length === 0) return;
+      
+      currentIndex = (currentIndex + 1) % currentDeck.length;
+      showCurrentCard();
+    }
+
+    // Mezclar array (para modo aleatorio)
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Cargar resultados de búsqueda
+    function loadSearchResults(level) {
+      const resultsContainer = document.getElementById('search-results');
+      resultsContainer.innerHTML = '';
+      
+      vocabulary[level].forEach(word => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${word.hanzi}</td>
+          <td>${word.pinyin}</td>
+          <td>${word.translation}</td>
+          <td>${level}</td>
+        `;
+        resultsContainer.appendChild(row);
+      });
+    }
+
+    // Filtrar palabras en el buscador
+    function filterWords() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const level = document.getElementById('search-level').value;
+      const resultsContainer = document.getElementById('search-results');
+      
+      resultsContainer.innerHTML = '';
+      
+      vocabulary[level].forEach(word => {
+        if (
+          word.hanzi.toLowerCase().includes(searchTerm) ||
+          word.pinyin.toLowerCase().includes(searchTerm) ||
+          word.translation.toLowerCase().includes(searchTerm)
+        ) {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${word.hanzi}</td>
+            <td>${word.pinyin}</td>
+            <td>${word.translation}</td>
+            <td>${level}</td>
+          `;
+          resultsContainer.appendChild(row);
+        }
+      });
+    }
+
+    // Mostrar palabra del día
+    function showWordOfDay() {
+      const level = document.getElementById('day-level').value;
+      const words = vocabulary[level];
+      const viewed = viewedWords[level];
+      
+      // Encontrar palabras no vistas
+      const unseenWords = words.filter(word => !viewed.includes(word.hanzi));
+      
+      let wordOfDay;
+      if (unseenWords.length > 0) {
+        // Hay palabras no vistas
+        const randomIndex = Math.floor(Math.random() * unseenWords.length);
+        wordOfDay = unseenWords[randomIndex];
+        viewed.push(wordOfDay.hanzi);
+        localStorage.setItem(`viewedWords-${level}`, JSON.stringify(viewed));
+      } else {
+        // Todas las palabras han sido vistas, reiniciar
+        viewedWords[level] = [];
+        localStorage.setItem(`viewedWords-${level}`, JSON.stringify([]));
+        const randomIndex = Math.floor(Math.random() * words.length);
+        wordOfDay = words[randomIndex];
+        viewedWords[level].push(wordOfDay.hanzi);
+      }
+      
+      // Mostrar la palabra
+      document.getElementById('day-hanzi').textContent = wordOfDay.hanzi;
+      document.getElementById('day-pinyin').textContent = wordOfDay.pinyin;
+      document.getElementById('day-translation').textContent = wordOfDay.translation;
+    }
+
+    // Cambiar nivel en el buscador
+    document.getElementById('search-level').addEventListener('change', function() {
+      loadSearchResults(this.value);
+    });
+  </script>
+</body>
+</html>
